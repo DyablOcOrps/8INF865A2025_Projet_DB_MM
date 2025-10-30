@@ -31,7 +31,7 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            ButtonAdd()
+            ButtonAdd(navController)
         }
     }
 }
@@ -68,9 +68,9 @@ fun CategoryChip(category: String) {
 }
 
 @Composable
-fun ButtonAdd() {
+fun ButtonAdd(navController: NavController) {
     FloatingActionButton(
-        onClick = { /* TODO: action du bouton + */ },
+        onClick = { navController.navigate("add_art") },
         containerColor = Color.Gray,
         modifier = Modifier.padding(bottom = 24.dp)
     ) {
