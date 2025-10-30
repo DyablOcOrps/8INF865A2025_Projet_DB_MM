@@ -9,9 +9,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
+import androidx.navigation.NavController
 
 @Composable
-fun TopBarApp(modifier: Modifier = Modifier) {
+fun TopBarApp(navController: NavController, modifier: Modifier = Modifier) {
     Surface(
         color = Color.Gray,
         modifier = modifier
@@ -30,7 +31,7 @@ fun TopBarApp(modifier: Modifier = Modifier) {
 
             // 🔹 Bouton d'identification à droite
             Button(
-                onClick = { /* TODO : action de connexion */ },
+                onClick = { navController.navigate("authentification") },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier
                     .align(Alignment.TopEnd)  // placé à droite et en haut
@@ -45,7 +46,7 @@ fun TopBarApp(modifier: Modifier = Modifier) {
 
             // 🔹 Bouton des messages à gauche
             Button(
-                onClick = { /* TODO : action de connexion */ },
+                onClick = { navController.navigate("communication") },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier
                     .align(Alignment.TopStart)  // placé à gauche et en haut

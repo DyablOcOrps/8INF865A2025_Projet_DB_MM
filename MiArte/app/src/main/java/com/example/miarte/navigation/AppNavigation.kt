@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.miarte.ui.screens.AuthentificationScreen
+import com.example.miarte.ui.screens.CommunicationScreen
 import com.example.miarte.ui.screens.HomeScreen
 import com.example.miarte.ui.screens.SettingsScreen
 
@@ -19,6 +21,12 @@ fun AppNavigation() {
         }
         composable("settings") {
             SettingsScreen(navController)
+        }
+        composable("authentification") {
+            AuthentificationScreen(navController)
+        }
+        composable("communication") {
+            CommunicationScreen(navController)
         }
     }
 }

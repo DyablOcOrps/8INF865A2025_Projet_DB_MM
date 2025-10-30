@@ -1,6 +1,5 @@
 package com.example.miarte.ui.screens
 
-import ButtonAdd
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -18,6 +17,7 @@ import com.example.miarte.ui.components.BaseScreen
 @Composable
 fun HomeScreen(navController: NavController) {
     BaseScreen(
+        navController
     ) {
         CategoryList()
         Button(

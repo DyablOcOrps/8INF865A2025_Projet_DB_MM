@@ -12,6 +12,7 @@ import com.example.miarte.ui.components.BaseScreen
 @Composable
 fun SettingsScreen(navController: NavController) {
     BaseScreen(
+        navController
     ) {
         Column(
             modifier = Modifier
