@@ -1,10 +1,12 @@
 package com.example.miarte.ui.screens
 
+import ButtonAdd
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -16,8 +18,6 @@ import com.example.miarte.ui.components.BaseScreen
 @Composable
 fun HomeScreen(navController: NavController) {
     BaseScreen(
-        title = "Accueil",
-        onAddClick = { /* action bouton + */ }
     ) {
         CategoryList()
         Button(
@@ -25,6 +25,13 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Text("Aller aux paramètres")
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            ButtonAdd()
         }
     }
 }
@@ -56,6 +63,22 @@ fun CategoryChip(category: String) {
             color = Color.White,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+    }
+}
+
+@Composable
+fun ButtonAdd() {
+    FloatingActionButton(
+        onClick = { /* TODO: action du bouton + */ },
+        containerColor = Color.Gray,
+        modifier = Modifier.padding(bottom = 24.dp)
+    ) {
+        Text(
+            text = "+",
+            color = Color.White,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }

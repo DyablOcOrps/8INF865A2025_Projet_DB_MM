@@ -12,8 +12,6 @@ import com.example.miarte.ui.components.BaseScreen
 @Composable
 fun SettingsScreen(navController: NavController) {
     BaseScreen(
-        title = "Paramètres",
-        showButtonAdd = false // pas de bouton flottant ici
     ) {
         Column(
             modifier = Modifier

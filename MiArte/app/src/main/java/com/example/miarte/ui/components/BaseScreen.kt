@@ -12,10 +12,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BaseScreen(
-    title: String,
     modifier: Modifier = Modifier,
-    showButtonAdd: Boolean = true,
-    onAddClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -27,26 +24,6 @@ fun BaseScreen(
             TopBarApp()
             Spacer(modifier = Modifier.height(8.dp))
             content()
-        }
-
-        if (showButtonAdd) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                FloatingActionButton(
-                    onClick = { onAddClick?.invoke() },
-                    containerColor = Color(0xFF666666),
-                    modifier = Modifier.padding(bottom = 24.dp)
-                ) {
-                    Text(
-                        text = "+",
-                        color = Color.White,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
         }
     }
 }
