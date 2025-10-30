@@ -51,6 +51,36 @@ fun TopBarApp(modifier: Modifier = Modifier) {
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
+
+            // 🔹 Bouton d'identification à droite
+            Button(
+                onClick = { /* TODO : action de connexion */ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)  // placé à droite et en haut
+                    .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+            ) {
+                Text(
+                    text = "Connexion",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
+
+            // 🔹 Bouton des messages à gauche
+            Button(
+                onClick = { /* TODO : action de connexion */ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                modifier = Modifier
+                    .align(Alignment.TopStart)  // placé à gauche et en haut
+                    .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+            ) {
+                Text(
+                    text = "Messages",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
@@ -73,19 +103,19 @@ fun CategoryList(modifier: Modifier = Modifier) {
 
 @Composable
 fun CategoryChip(category: String) {
-    Surface(
-        color = Color.LightGray,
-        shape = androidx.compose.material3.MaterialTheme.shapes.medium,
-        modifier = Modifier
+    Button(
+        onClick = { /* TODO : action de connexion */ },
+        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
     ) {
         Text(
             text = category,
-            color = Color.Black,
+            color = Color.White,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }
 }
+
 
 @Composable
 fun ButtonAdd() {
