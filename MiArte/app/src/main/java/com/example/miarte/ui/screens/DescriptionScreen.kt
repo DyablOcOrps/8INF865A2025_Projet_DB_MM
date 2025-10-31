@@ -19,53 +19,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.miarte.ui.components.BaseScreen
 
 @Composable
 fun DescriptionScreen(
     art: Art,
     navController: NavController
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = art.title,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // Image en grand
-        Box(
+    BaseScreen(navController) {
+        Column(
             modifier = Modifier
-                .height(300.dp)
-                .fillMaxWidth()
-                .background(Color.Gray)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Description: ${art.description}", fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Prix: ${art.price} €", fontSize = 16.sp)
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Boutons en bas
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Button(onClick = { navController.popBackStack() }) {
-                Text("Retour")
-            }
-            Button(onClick = {
-                // TODO: action pour contacter l’auteur
-            }) {
-                Text("Contact")
+            Text(
+                text = art.title,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Image en grand
+            Box(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .background(Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Description: ${art.description}", fontSize = 16.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Prix: ${art.price} €", fontSize = 16.sp)
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Boutons en bas
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = { navController.popBackStack() }) {
+                    Text("Retour")
+                }
+                Button(onClick = {
+                    // TODO: action pour contacter l’auteur
+                }) {
+                    Text("Contact")
+                }
             }
         }
     }
