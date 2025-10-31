@@ -30,19 +30,27 @@ data class Art(
 @Composable
 fun HomeScreen(navController: NavController, arts: List<Art>) {
     BaseScreen(navController) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            CategoryList()
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxHeight(),
-                contentPadding = PaddingValues(bottom = 80.dp)
-            ) {
-                items(arts) { art ->
-                    ArtCard(art, navController)
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            // --- Contenu scrollable ---
+            Column(modifier = Modifier.fillMaxSize()) {
+                CategoryList()
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentPadding = PaddingValues(bottom = 80.dp)
+                ) {
+                    items(arts) { art ->
+                        ArtCard(art, navController)
+                    }
                 }
             }
+
+            // --- Bouton flottant + ---
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
                 ButtonAdd(navController)
