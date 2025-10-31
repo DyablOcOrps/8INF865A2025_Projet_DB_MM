@@ -26,7 +26,8 @@ fun TopBarApp(navController: NavController, modifier: Modifier = Modifier) {
             Text(
                 text = "MiArte",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 15.dp)
             )
 
             // 🔹 Bouton d'identification à droite

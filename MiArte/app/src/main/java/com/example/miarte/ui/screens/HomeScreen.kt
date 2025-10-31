@@ -1,6 +1,9 @@
 package com.example.miarte.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -14,24 +17,36 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
 
+
+data class Art(
+    val id: Int,
+    val title: String,
+    val imageUrl: String,
+    val author: String,
+    val description: String,
+    val price: String
+)
+
 @Composable
-fun HomeScreen(navController: NavController) {
-    BaseScreen(
-        navController
-    ) {
-        CategoryList()
-        Button(
-            onClick = { navController.navigate("settings") },
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Text("Aller aux paramètres")
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            ButtonAdd(navController)
+fun HomeScreen(navController: NavController, arts: List<Art>) {
+    BaseScreen(navController) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            CategoryList()
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier.fillMaxHeight(),
+                contentPadding = PaddingValues(bottom = 80.dp)
+            ) {
+                items(arts) { art ->
+                    ArtCard(art, navController)
+                }
+            }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                ButtonAdd(navController)
+            }
         }
     }
 }
@@ -82,3 +97,35 @@ fun ButtonAdd(navController: NavController) {
         )
     }
 }
+
+@Composable
+fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable {
+                navController.navigate("art_description/${art.id}")
+            },
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+                    .background(Color.Gray)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text("Prix: ${art.price} €", fontSize = 14.sp)
+        }
+    }
+}
+
+
+
+
