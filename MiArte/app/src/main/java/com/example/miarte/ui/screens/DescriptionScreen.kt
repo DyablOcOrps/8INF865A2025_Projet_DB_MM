@@ -65,7 +65,7 @@ fun DescriptionScreen(
                     Text("Retour")
                 }
                 Button(onClick = {
-                    // TODO: action pour contacter l’auteur
+                    navController.navigate("conversation/${art.author}")
                 }) {
                     Text("Contact")
                 }

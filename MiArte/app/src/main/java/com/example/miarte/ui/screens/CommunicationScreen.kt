@@ -1,43 +1,48 @@
 package com.example.miarte.ui.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.miarte.ui.components.TopBarApp
+import com.example.miarte.ui.components.BaseScreen
 
 @Composable
 fun CommunicationScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        TopBarApp(navController)
+    val users = listOf("Alice", "Bob", "Charlie", "Diana", "Élodie", "François")
 
-        // 🔹 Contenu principal sous la barre
-        Box(
+    BaseScreen(navController) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp), // un peu d’espace
-            contentAlignment = Alignment.TopCenter
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
-                text = "Bienvenue sur la page des messages",
-                fontSize = 20.sp,
+                text = "Messages",
+                fontSize = 24.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.navigate("home") }) {
-                Text("Retour à l'accueil")
+
+            // Liste verticale de "contacts"
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(users) { user ->
+                    Button(
+                        onClick = {
+                            navController.navigate("conversation/$user")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = user, fontSize = 18.sp)
+                    }
+                }
             }
         }
     }

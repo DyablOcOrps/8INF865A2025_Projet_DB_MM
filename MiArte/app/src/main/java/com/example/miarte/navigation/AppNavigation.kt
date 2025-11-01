@@ -13,6 +13,8 @@ import com.example.miarte.ui.screens.CommunicationScreen
 import com.example.miarte.ui.screens.DescriptionScreen
 import com.example.miarte.ui.screens.HomeScreen
 import com.example.miarte.ui.screens.Art
+import com.example.miarte.ui.screens.ConversationScreen
+import com.example.miarte.ui.screens.RegisterScreen
 import com.example.miarte.ui.screens.SettingsScreen
 
 
@@ -42,6 +44,9 @@ fun AppNavigation() {
         composable("add_art") {
             AddArtScreen(navController)
         }
+        composable("register") {
+            RegisterScreen(navController)
+        }
         composable(
             "art_description/{artId}",
             arguments = listOf(navArgument("artId") { type = NavType.IntType })
@@ -49,6 +54,14 @@ fun AppNavigation() {
             val artId = backStackEntry.arguments?.getInt("artId")
             val art = arts.first { it.id == artId }
             DescriptionScreen(art, navController)
+        }
+
+        composable(
+            "conversation/{username}",
+            arguments = listOf(navArgument("username") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            ConversationScreen(navController, username)
         }
     }
 }
