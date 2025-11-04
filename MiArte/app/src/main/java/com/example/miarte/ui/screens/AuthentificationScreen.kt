@@ -16,7 +16,7 @@ fun AuthentificationScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    BaseScreen(navController) {
+    BaseScreen(navController, isConnexionPage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

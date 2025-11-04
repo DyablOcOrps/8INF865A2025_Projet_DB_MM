@@ -16,7 +16,7 @@ import com.example.miarte.ui.components.BaseScreen
 fun CommunicationScreen(navController: NavController) {
     val users = listOf("Alice", "Bob", "Charlie", "Diana", "Élodie", "François")
 
-    BaseScreen(navController) {
+    BaseScreen(navController, isMessagePage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

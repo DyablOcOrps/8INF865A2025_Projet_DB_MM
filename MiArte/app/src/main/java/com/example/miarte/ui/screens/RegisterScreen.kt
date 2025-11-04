@@ -30,7 +30,7 @@ fun RegisterScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var firstname by remember { mutableStateOf("") }
 
-    BaseScreen(navController) {
+    BaseScreen(navController, isConnexionPage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.*
 import androidx.navigation.NavController
 
 @Composable
-fun TopBarApp(navController: NavController, modifier: Modifier = Modifier) {
+fun TopBarApp(navController: NavController,
+              modifier: Modifier = Modifier,
+              isConnexionPage: Boolean = true,
+              isMessagePage: Boolean = true) {
     Surface(
         color = Color.Gray,
         modifier = modifier
@@ -31,33 +34,37 @@ fun TopBarApp(navController: NavController, modifier: Modifier = Modifier) {
             )
 
             // 🔹 Bouton d'identification à droite
-            Button(
-                onClick = { navController.navigate("authentification") },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                modifier = Modifier
-                    .align(Alignment.TopEnd)  // placé à droite et en haut
-                    .padding(top = 36.dp)     // 🔽 descend un peu le bouton
-            ) {
-                Text(
-                    text = "Connexion",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
+            if (isConnexionPage) {
+                Button(
+                    onClick = { navController.navigate("authentification") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)  // placé à droite et en haut
+                        .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+                ) {
+                    Text(
+                        text = "Connexion",
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
 
             // 🔹 Bouton des messages à gauche
-            Button(
-                onClick = { navController.navigate("communication") },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                modifier = Modifier
-                    .align(Alignment.TopStart)  // placé à gauche et en haut
-                    .padding(top = 36.dp)     // 🔽 descend un peu le bouton
-            ) {
-                Text(
-                    text = "Messages",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
+            if (isMessagePage) {
+                Button(
+                    onClick = { navController.navigate("communication") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)  // placé à gauche et en haut
+                        .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+                ) {
+                    Text(
+                        text = "Messages",
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }

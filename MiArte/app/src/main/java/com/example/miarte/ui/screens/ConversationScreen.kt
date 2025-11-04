@@ -21,7 +21,7 @@ import com.example.miarte.ui.components.BaseScreen
 fun ConversationScreen(navController: NavController, username: String) {
     var message by remember { mutableStateOf("") }
 
-    BaseScreen(navController) {
+    BaseScreen(navController, isMessagePage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
