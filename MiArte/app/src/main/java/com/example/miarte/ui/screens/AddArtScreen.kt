@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import com.example.miarte.ui.components.BaseScreen
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddArtScreen(navController: NavController) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -60,6 +61,11 @@ fun AddArtScreen(navController: NavController) {
             price.isNotBlank() &&
             imageUri != null &&
             expertChecked
+
+    var category by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+
+    val categories = listOf("Peinture", "Sculpture", "Photo", "Dessin", "Autre")
 
     Column(
         modifier = Modifier
@@ -119,6 +125,39 @@ fun AddArtScreen(navController: NavController) {
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                //Bouton Catégorie
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = category,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Catégorie") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        categories.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(item) },
+                                onClick = {
+                                    category = item
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
 
                 // Prix + Validation Expert
                 Row(
