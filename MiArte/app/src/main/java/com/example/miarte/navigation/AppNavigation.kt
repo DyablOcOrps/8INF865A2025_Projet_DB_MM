@@ -12,17 +12,10 @@ import com.example.miarte.ui.screens.AuthentificationScreen
 import com.example.miarte.ui.screens.CommunicationScreen
 import com.example.miarte.ui.screens.DescriptionScreen
 import com.example.miarte.ui.screens.HomeScreen
-import com.example.miarte.ui.screens.Art
 import com.example.miarte.ui.screens.ConversationScreen
 import com.example.miarte.ui.screens.RegisterScreen
 import com.example.miarte.ui.screens.SettingsScreen
-
-
-val arts = listOf(
-    Art(1, "Peinture Rouge", "url1", "Alice", "Une belle peinture rouge", "100"),
-    Art(2, "Musique Jazz", "url2", "Bob", "Album de jazz", "200"),
-    Art(3, "Sculpture Bronze", "url3", "Charlie", "Sculpture en bronze", "150")
-)
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
 fun AppNavigation() {
@@ -30,7 +23,7 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            HomeScreen(navController, arts)
+            HomeScreen(navController)
         }
         composable("settings") {
             SettingsScreen(navController)
@@ -51,9 +44,14 @@ fun AppNavigation() {
             "art_description/{artId}",
             arguments = listOf(navArgument("artId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val artId = backStackEntry.arguments?.getInt("artId")
-            val art = arts.first { it.id == artId }
-            DescriptionScreen(art, navController)
+
+            val viewModel: MiArteViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+            val artId = backStackEntry.arguments?.getInt("artId") ?: return@composable
+
+            val art = viewModel.getArtById(artId)
+            if (art != null) {
+                DescriptionScreen(art, navController)
+            }
         }
 
         composable(

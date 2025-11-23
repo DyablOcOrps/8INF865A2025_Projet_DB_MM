@@ -8,34 +8,36 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
-
-
-data class Art(
-    val id: Int,
-    val title: String,
-    val imageUrl: String,
-    val author: String,
-    val description: String,
-    val price: String
-)
+import com.example.miarte.viewmodel.MiArteViewModel
+import com.example.miarte.model.Art
+import com.example.miarte.model.Category
 
 @Composable
-fun HomeScreen(navController: NavController, arts: List<Art>) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: MiArteViewModel = viewModel()
+) {
+    val arts = viewModel.arts.collectAsState().value
+
     BaseScreen(navController) {
         Box(modifier = Modifier.fillMaxSize()) {
 
-            // --- Contenu scrollable ---
             Column(modifier = Modifier.fillMaxSize()) {
-                CategoryList()
+
+                CategoryList(viewModel)
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 LazyColumn(
                     modifier = Modifier.fillMaxHeight(),
                     contentPadding = PaddingValues(bottom = 80.dp)
@@ -46,7 +48,6 @@ fun HomeScreen(navController: NavController, arts: List<Art>) {
                 }
             }
 
-            // --- Bouton flottant + ---
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -60,8 +61,11 @@ fun HomeScreen(navController: NavController, arts: List<Art>) {
 }
 
 @Composable
-fun CategoryList(modifier: Modifier = Modifier) {
-    val categories = listOf("Dessin", "Musique", "Peinture", "Écriture", "Jeux Vidéos")
+fun CategoryList(
+    viewModel: MiArteViewModel,
+    modifier: Modifier = Modifier
+) {
+    val categories = viewModel.categories
 
     LazyRow(
         modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -70,19 +74,23 @@ fun CategoryList(modifier: Modifier = Modifier) {
         items(categories) { category ->
             CategoryChip(
                 category = category,
+                onClick = { viewModel.selectCategory(category) }
             )
         }
     }
 }
 
 @Composable
-fun CategoryChip(category: String) {
+fun CategoryChip(
+    category: Category,
+    onClick: () -> Unit
+) {
     Button(
-        onClick = { /* TODO : action de connexion */ },
-        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
     ) {
         Text(
-            text = category,
+            text = category.name,
             color = Color.White,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -133,7 +141,3 @@ fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifie
         }
     }
 }
-
-
-
-

@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -19,32 +18,36 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.miarte.ui.components.BaseScreen
-
+import com.example.miarte.viewmodel.MiArteViewModel
+import com.example.miarte.model.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddArtScreen(navController: NavController) {
+fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = viewModel()) {
+
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var expertChecked by remember { mutableStateOf(false) }
 
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var expanded by remember { mutableStateOf(false) }
+
+    val categories = viewModel.categoriesNoAll
     val context = LocalContext.current
 
-    // --- Galerie ---
+    // === IMAGE PICKERS ===
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> imageUri = uri }
+    ) { uri -> imageUri = uri }
 
-    // --- Caméra ---
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
@@ -60,12 +63,8 @@ fun AddArtScreen(navController: NavController) {
             description.isNotBlank() &&
             price.isNotBlank() &&
             imageUri != null &&
+            selectedCategory != null &&
             expertChecked
-
-    var category by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-
-    val categories = listOf("Peinture", "Sculpture", "Photo", "Dessin", "Autre")
 
     Column(
         modifier = Modifier
@@ -73,15 +72,14 @@ fun AddArtScreen(navController: NavController) {
             .background(Color(0xFFF5F5F5))
     ) {
         BaseScreen(navController) {
-            // --- Contenu principal ---
+
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Image
+
+                // IMAGE
                 Box(
                     modifier = Modifier
                         .size(180.dp)
@@ -101,7 +99,6 @@ fun AddArtScreen(navController: NavController) {
                     }
                 }
 
-                // Boutons Galerie / Caméra
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Button(onClick = { galleryLauncher.launch("image/*") }) {
                         Text("Galerie")
@@ -111,7 +108,7 @@ fun AddArtScreen(navController: NavController) {
                     }
                 }
 
-                // Champs texte
+                // FORM FIELDS
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
@@ -126,17 +123,17 @@ fun AddArtScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                //Bouton Catégorie
+                // === CATÉGORIE ===
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     OutlinedTextField(
-                        value = category,
+                        value = selectedCategory?.name ?: "",
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Catégorie") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth()
@@ -148,9 +145,9 @@ fun AddArtScreen(navController: NavController) {
                     ) {
                         categories.forEach { item ->
                             DropdownMenuItem(
-                                text = { Text(item) },
+                                text = { Text(item.name) },
                                 onClick = {
-                                    category = item
+                                    selectedCategory = item
                                     expanded = false
                                 }
                             )
@@ -158,8 +155,7 @@ fun AddArtScreen(navController: NavController) {
                     }
                 }
 
-
-                // Prix + Validation Expert
+                // PRIX + CHECK
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -183,9 +179,18 @@ fun AddArtScreen(navController: NavController) {
                     }
                 }
 
-                // Bouton Continuer
+                // SUBMIT BUTTON
                 Button(
-                    onClick = { navController.navigate("home") },
+                    onClick = {
+                        viewModel.addArt(
+                            title = title,
+                            description = description,
+                            price = price,
+                            imageUrl = imageUri.toString(),
+                            category = selectedCategory!!
+                        )
+                        navController.navigate("home")
+                    },
                     enabled = allFieldsFilled,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -194,13 +199,8 @@ fun AddArtScreen(navController: NavController) {
                     Text("Continuer")
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(onClick = { navController.popBackStack() }) {
-                        Text("Retour")
-                    }
+                Button(onClick = { navController.popBackStack() }) {
+                    Text("Retour")
                 }
             }
         }
