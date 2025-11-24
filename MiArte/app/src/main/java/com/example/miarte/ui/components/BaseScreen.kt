@@ -1,10 +1,12 @@
 package com.example.miarte.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.miarte.ui.theme.GreenBackground
 
 @Composable
 fun BaseScreen(
@@ -15,13 +17,12 @@ fun BaseScreen(
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize().background(GreenBackground)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             TopBarApp(navController, isConnexionPage = isConnexionPage, isMessagePage = isMessagePage)
-            Spacer(modifier = Modifier.height(8.dp))
             content()
         }
     }

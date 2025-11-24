@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.model.Art
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenCategoryList
 
 @Composable
 fun DescriptionScreen(

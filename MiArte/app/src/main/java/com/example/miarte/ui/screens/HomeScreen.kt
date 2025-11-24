@@ -21,6 +21,8 @@ import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Art
 import com.example.miarte.model.Category
+import com.example.miarte.ui.theme.GreenButton
+import com.example.miarte.ui.theme.GreenCategoryList
 
 @Composable
 fun HomeScreen(
@@ -66,16 +68,20 @@ fun CategoryList(
     modifier: Modifier = Modifier
 ) {
     val categories = viewModel.categories
-
-    LazyRow(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Surface(
+        color = GreenCategoryList,
+        modifier = modifier.fillMaxWidth() // Pour prendre toute la largeur dispo
     ) {
-        items(categories) { category ->
-            CategoryChip(
-                category = category,
-                onClick = { viewModel.selectCategory(category) }
-            )
+        LazyRow(
+            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(categories) { category ->
+                CategoryChip(
+                    category = category,
+                    onClick = { viewModel.selectCategory(category) }
+                )
+            }
         }
     }
 }
@@ -87,7 +93,7 @@ fun CategoryChip(
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
     ) {
         Text(
             text = category.name,
@@ -102,7 +108,7 @@ fun CategoryChip(
 fun ButtonAdd(navController: NavController) {
     FloatingActionButton(
         onClick = { navController.navigate("add_art") },
-        containerColor = Color.Gray,
+        containerColor = GreenButton,
         modifier = Modifier.padding(bottom = 24.dp)
     ) {
         Text(
@@ -123,7 +129,7 @@ fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifie
             .clickable {
                 navController.navigate("art_description/${art.id}")
             },
-        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+        colors = CardDefaults.cardColors(containerColor = GreenButton)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -136,8 +142,8 @@ fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifie
                     .background(Color.Gray)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text("Prix: ${art.price} €", fontSize = 14.sp)
+            Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+            Text("Prix: ${art.price} €", fontSize = 14.sp, color = Color.White)
         }
     }
 }

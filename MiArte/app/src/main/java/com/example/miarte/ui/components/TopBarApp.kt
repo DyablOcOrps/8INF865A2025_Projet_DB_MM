@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
 import androidx.navigation.NavController
+import com.example.miarte.ui.theme.GreenButton
+import com.example.miarte.ui.theme.GreenTopBar
 
 @Composable
 fun TopBarApp(navController: NavController,
@@ -17,7 +19,7 @@ fun TopBarApp(navController: NavController,
               isConnexionPage: Boolean = true,
               isMessagePage: Boolean = true) {
     Surface(
-        color = Color.Gray,
+        color = GreenTopBar,
         modifier = modifier
             .fillMaxWidth()
             .height(90.dp)
@@ -37,7 +39,7 @@ fun TopBarApp(navController: NavController,
             if (isConnexionPage) {
                 Button(
                     onClick = { navController.navigate("authentification") },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                     modifier = Modifier
                         .align(Alignment.TopEnd)  // placé à droite et en haut
                         .padding(top = 36.dp)     // 🔽 descend un peu le bouton
@@ -54,7 +56,7 @@ fun TopBarApp(navController: NavController,
             if (isMessagePage) {
                 Button(
                     onClick = { navController.navigate("communication") },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                     modifier = Modifier
                         .align(Alignment.TopStart)  // placé à gauche et en haut
                         .padding(top = 36.dp)     // 🔽 descend un peu le bouton
