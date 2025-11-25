@@ -26,6 +26,7 @@ import coil.request.ImageRequest
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Category
+import com.example.miarte.ui.theme.GreenButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,10 +101,16 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Button(onClick = { galleryLauncher.launch("image/*") }) {
+                    Button(
+                        onClick = { galleryLauncher.launch("image/*") },
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                    ) {
                         Text("Galerie")
                     }
-                    Button(onClick = { cameraLauncher.launch(null) }) {
+                    Button(
+                        onClick = { galleryLauncher.launch("image/*") },
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                    ) {
                         Text("Caméra")
                     }
                 }
@@ -199,7 +206,10 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                     Text("Continuer")
                 }
 
-                Button(onClick = { navController.popBackStack() }) {
+                Button(
+                    onClick = { navController.popBackStack() },
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
                     Text("Retour")
                 }
             }

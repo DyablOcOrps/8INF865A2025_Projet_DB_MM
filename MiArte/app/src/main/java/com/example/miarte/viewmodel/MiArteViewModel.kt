@@ -41,8 +41,6 @@ class MiArteViewModel : ViewModel() {
     private val _arts = MutableStateFlow<List<Art>>(fullArtList)
     val arts: StateFlow<List<Art>> = _arts.asStateFlow()
 
-    // ===== FILTRAGE =====
-
     fun selectCategory(category: Category) {
         _selectedCategory.value = category
 
@@ -50,8 +48,6 @@ class MiArteViewModel : ViewModel() {
             if (category.id == 0) fullArtList
             else fullArtList.filter { it.category.id == category.id }
     }
-
-    // ===== AJOUT D’UNE ŒUVRE =====
 
     fun addArt(title: String, description: String, price: String, imageUrl: String, category: Category) {
         val newId = (fullArtList.maxOfOrNull { it.id } ?: 0) + 1

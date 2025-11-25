@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenButton
 
 @Composable
 fun CommunicationScreen(navController: NavController) {
@@ -37,6 +38,7 @@ fun CommunicationScreen(navController: NavController) {
                         onClick = {
                             navController.navigate("conversation/$user")
                         },
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = user, fontSize = 18.sp)

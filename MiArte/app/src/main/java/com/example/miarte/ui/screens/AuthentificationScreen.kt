@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenButton
 
 @Composable
 fun AuthentificationScreen(navController: NavController) {
@@ -51,6 +52,7 @@ fun AuthentificationScreen(navController: NavController) {
                     // ✅ Ici tu pourras brancher Firebase/Auth ou autre plus tard
                     navController.navigate("home")
                 },
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Se connecter")

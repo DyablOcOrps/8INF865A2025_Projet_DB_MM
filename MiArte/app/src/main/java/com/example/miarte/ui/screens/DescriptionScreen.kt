@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +22,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.model.Art
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenButton
 import com.example.miarte.ui.theme.GreenCategoryList
+import com.example.miarte.ui.theme.GreenTopBar
 
 @Composable
 fun DescriptionScreen(
@@ -63,12 +66,16 @@ fun DescriptionScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(onClick = { navController.popBackStack() }) {
+                Button(
+                    onClick = { navController.popBackStack() },
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
                     Text("Retour")
                 }
-                Button(onClick = {
-                    navController.navigate("conversation/${art.author}")
-                }) {
+                Button(
+                    onClick = { navController.navigate("conversation/${art.author}") },
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
                     Text("Contact")
                 }
             }

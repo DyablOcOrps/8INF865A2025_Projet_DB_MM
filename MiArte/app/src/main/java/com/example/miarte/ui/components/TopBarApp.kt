@@ -10,8 +10,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
 import androidx.navigation.NavController
-import com.example.miarte.ui.theme.GreenButton
 import com.example.miarte.ui.theme.GreenTopBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.ui.draw.rotate
 
 @Composable
 fun TopBarApp(navController: NavController,
@@ -32,6 +35,7 @@ fun TopBarApp(navController: NavController,
                 text = "MiArte",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
+                color = Color.White,
                 modifier = Modifier.padding(bottom = 15.dp)
             )
 
@@ -39,15 +43,15 @@ fun TopBarApp(navController: NavController,
             if (isConnexionPage) {
                 Button(
                     onClick = { navController.navigate("authentification") },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
                         .align(Alignment.TopEnd)  // placé à droite et en haut
                         .padding(top = 36.dp)     // 🔽 descend un peu le bouton
                 ) {
-                    Text(
-                        text = "Connexion",
-                        color = Color.White,
-                        fontSize = 14.sp
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Identification",
+                        tint = Color.White,
                     )
                 }
             }
@@ -56,15 +60,16 @@ fun TopBarApp(navController: NavController,
             if (isMessagePage) {
                 Button(
                     onClick = { navController.navigate("communication") },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
                         .align(Alignment.TopStart)  // placé à gauche et en haut
                         .padding(top = 36.dp)     // 🔽 descend un peu le bouton
                 ) {
-                    Text(
-                        text = "Messages",
-                        color = Color.White,
-                        fontSize = 14.sp
+                    Icon(
+                        imageVector = Icons.Filled.Send,
+                        contentDescription = "Messages",
+                        tint = Color.White,
+                        modifier = Modifier.rotate(-20f)
                     )
                 }
             }

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenButton
 
 @Composable
 fun ConversationScreen(navController: NavController, username: String) {
@@ -61,10 +62,13 @@ fun ConversationScreen(navController: NavController, username: String) {
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Button(onClick = {
-                    // TODO : logique d’envoi à ajouter plus tard
-                    message = ""
-                }) {
+                Button(
+                    onClick = {
+                        // TODO : logique d’envoi à ajouter plus tard
+                        message = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                ) {
                     Text("Envoyer")
                 }
             }
@@ -73,6 +77,7 @@ fun ConversationScreen(navController: NavController, username: String) {
 
             Button(
                 onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Retour")

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.miarte.ui.components.BaseScreen
+import com.example.miarte.ui.theme.GreenButton
 
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -76,6 +78,7 @@ fun RegisterScreen(navController: NavController) {
                         popUpTo("register") { inclusive = true }
                     }
                 },
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Créer mon compte")
