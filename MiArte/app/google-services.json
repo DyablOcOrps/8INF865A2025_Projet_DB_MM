@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "260474718120",
+    "project_id": "miarte-634a6",
+    "storage_bucket": "miarte-634a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260474718120:android:eca5ba1729b4199556ff9d",
+        "android_client_info": {
+          "package_name": "com.example.miarte"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-MHYqLi_EN4W4ydd3sEZ3pKY8Tauz60k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
