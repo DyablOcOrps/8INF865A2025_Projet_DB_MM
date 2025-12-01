@@ -47,7 +47,7 @@ class MiArteViewModel : ViewModel() {
         _authState.value = AuthState.Loading
         firebaseAuth.createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener { authResult ->
-                // Optionnel : Ajouter le prénom au profil Firebase
+                // Ajouter le prénom au profil Firebase
                 val user = authResult.user
                 val profileUpdates = UserProfileChangeRequest.Builder()
                     .setDisplayName(firstName)

@@ -9,6 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +49,7 @@ fun HomeScreen(
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     items(arts) { art ->
-                        ArtCard(art, navController)
+                        ArtCard(art, navController, viewModel)
                     }
                 }
             }
@@ -121,13 +125,52 @@ fun ButtonAdd(navController: NavController) {
 }
 
 @Composable
-fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifier) {
+fun LoginBubbleDialog(
+    onDismiss: () -> Unit,
+    onGoToLogin: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(onClick = onGoToLogin) {
+                Text("Se connecter")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Annuler")
+            }
+        },
+        title = {
+            Text("Pour continuer : connectez-vous")
+        },
+        text = {
+            Text("Veuillez vous identifier pour accéder aux détails de cette œuvre.")
+        }
+    )
+}
+
+@Composable
+fun ArtCard(
+    art: Art,
+    navController: NavController,
+    viewModel: MiArteViewModel,
+    modifier: Modifier = Modifier
+) {
+
+    val isUserLoggedIn = viewModel.isUserLoggedIn.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable {
-                navController.navigate("art_description/${art.id}")
+                if (isUserLoggedIn.value) {
+                    navController.navigate("art_description/${art.id}")
+                } else {
+                    showDialog = true
+                }
             },
         colors = CardDefaults.cardColors(containerColor = GreenButton)
     ) {
@@ -144,6 +187,16 @@ fun ArtCard(art: Art, navController: NavController, modifier: Modifier = Modifie
             Spacer(modifier = Modifier.height(8.dp))
             Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
             Text("Prix: ${art.price} €", fontSize = 14.sp, color = Color.White)
+        }
+
+        if (showDialog) {
+            LoginBubbleDialog(
+                onDismiss = { showDialog = false },
+                onGoToLogin = {
+                    showDialog = false
+                    navController.navigate("authentification")
+                }
+            )
         }
     }
 }

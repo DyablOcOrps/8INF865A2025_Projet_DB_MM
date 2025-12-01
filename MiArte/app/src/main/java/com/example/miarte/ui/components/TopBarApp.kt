@@ -79,7 +79,7 @@ fun TopBarApp(navController: NavController,
                     colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
                         .align(Alignment.TopStart)  // placé à gauche et en haut
-                        .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+                        .padding(top = 36.dp)     // descend un peu le bouton
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Send,
