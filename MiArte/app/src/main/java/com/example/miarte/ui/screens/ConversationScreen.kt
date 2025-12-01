@@ -12,15 +12,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.ui.theme.GreenButton
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
-fun ConversationScreen(navController: NavController, username: String) {
+fun ConversationScreen(
+    navController: NavController,
+    username: String,
+    viewModel: MiArteViewModel = viewModel()
+) {
     var message by remember { mutableStateOf("") }
 
-    BaseScreen(navController, isMessagePage = false) {
+    BaseScreen(navController, viewModel, isMessagePage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

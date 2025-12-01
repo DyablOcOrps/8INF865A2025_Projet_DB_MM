@@ -8,15 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.ui.theme.GreenButton
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
-fun CommunicationScreen(navController: NavController) {
+fun CommunicationScreen(
+    navController: NavController,
+    viewModel: MiArteViewModel = viewModel(),
+    ) {
     val users = listOf("Alice", "Bob", "Charlie", "Diana", "Élodie", "François")
 
-    BaseScreen(navController, isMessagePage = false) {
+    BaseScreen(navController, viewModel, isMessagePage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -58,7 +58,7 @@ fun AuthentificationScreen(
         }
     }
 
-    BaseScreen(navController, isConnexionPage = false) {
+    BaseScreen(navController, viewModel, isConnexionPage = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

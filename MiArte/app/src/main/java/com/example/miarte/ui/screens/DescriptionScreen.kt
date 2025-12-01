@@ -19,19 +19,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.miarte.model.Art
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.ui.theme.GreenButton
 import com.example.miarte.ui.theme.GreenCategoryList
 import com.example.miarte.ui.theme.GreenTopBar
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
 fun DescriptionScreen(
     art: Art,
+    viewModel: MiArteViewModel = viewModel(),
     navController: NavController
 ) {
-    BaseScreen(navController) {
+    BaseScreen(navController, viewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

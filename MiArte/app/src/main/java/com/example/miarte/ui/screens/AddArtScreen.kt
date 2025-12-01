@@ -72,8 +72,10 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
             .fillMaxSize()
             .background(Color(0xFFF5F5F5))
     ) {
-        BaseScreen(navController) {
-
+        BaseScreen(
+            navController = navController,
+            viewModel = viewModel,
+        ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

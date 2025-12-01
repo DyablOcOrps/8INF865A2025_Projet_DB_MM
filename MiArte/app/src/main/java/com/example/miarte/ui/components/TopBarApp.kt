@@ -14,13 +14,20 @@ import com.example.miarte.ui.theme.GreenTopBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.rotate
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
 fun TopBarApp(navController: NavController,
+              viewModel: MiArteViewModel,
               modifier: Modifier = Modifier,
               isConnexionPage: Boolean = true,
               isMessagePage: Boolean = true) {
+
+    val isUserLoggedIn = viewModel.isUserLoggedIn.collectAsState()
+
     Surface(
         color = GreenTopBar,
         modifier = modifier
@@ -42,14 +49,23 @@ fun TopBarApp(navController: NavController,
             // 🔹 Bouton d'identification à droite
             if (isConnexionPage) {
                 Button(
-                    onClick = { navController.navigate("authentification") },
+                    onClick = {
+                        if (isUserLoggedIn.value) {
+                            navController.navigate("settings")
+                        } else {
+                            navController.navigate("authentification")
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
-                        .align(Alignment.TopEnd)  // placé à droite et en haut
-                        .padding(top = 36.dp)     // 🔽 descend un peu le bouton
+                        .align(Alignment.TopEnd)
+                        .padding(top = 36.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.AccountCircle,
+                        imageVector = if (isUserLoggedIn.value)
+                            Icons.Filled.Settings
+                        else
+                            Icons.Filled.AccountCircle,
                         contentDescription = "Identification",
                         tint = Color.White,
                     )

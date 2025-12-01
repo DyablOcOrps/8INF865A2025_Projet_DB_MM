@@ -26,12 +26,16 @@ class MiArteViewModel : ViewModel() {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
+    private val _isUserLoggedIn = MutableStateFlow(firebaseAuth.currentUser != null)
+    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
+
     // Fonction de Connexion
     fun login(email: String, pass: String) {
         _authState.value = AuthState.Loading
         firebaseAuth.signInWithEmailAndPassword(email, pass)
             .addOnSuccessListener {
                 _authState.value = AuthState.Success
+                _isUserLoggedIn.value = true
             }
             .addOnFailureListener { exception ->
                 _authState.value = AuthState.Error(exception.message ?: "Erreur inconnue")
@@ -51,9 +55,32 @@ class MiArteViewModel : ViewModel() {
                 user?.updateProfile(profileUpdates)
 
                 _authState.value = AuthState.Success
+                _isUserLoggedIn.value = true
             }
             .addOnFailureListener { exception ->
                 _authState.value = AuthState.Error(exception.message ?: "Erreur inconnue")
+            }
+    }
+
+    fun logout() {
+        firebaseAuth.signOut()
+        _isUserLoggedIn.value = false
+    }
+
+    fun deleteAccount(onResult: (Boolean, String?) -> Unit) {
+        val user = firebaseAuth.currentUser
+        if (user == null) {
+            onResult(false, "Utilisateur non connecté")
+            return
+        }
+
+        user.delete()
+            .addOnSuccessListener {
+                _isUserLoggedIn.value = false
+                onResult(true, null)
+            }
+            .addOnFailureListener { e ->
+                onResult(false, e.message)
             }
     }
 

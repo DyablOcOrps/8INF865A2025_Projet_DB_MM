@@ -56,7 +56,7 @@ fun RegisterScreen(
         }
     }
 
-    BaseScreen(navController, isConnexionPage = false) {
+    BaseScreen(navController, viewModel, isConnexionPage = false) {
         Column(
             modifier = Modifier.fillMaxSize().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

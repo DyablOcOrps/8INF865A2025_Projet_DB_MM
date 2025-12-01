@@ -6,10 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.miarte.ui.theme.GreenBackground
+import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
 fun BaseScreen(
     navController: NavController,
+    viewModel: MiArteViewModel,
     modifier: Modifier = Modifier,
     isConnexionPage: Boolean = true,
     isMessagePage: Boolean = true,
@@ -21,7 +23,12 @@ fun BaseScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            TopBarApp(navController, isConnexionPage = isConnexionPage, isMessagePage = isMessagePage)
+            TopBarApp(
+                navController = navController,
+                viewModel = viewModel,
+                isConnexionPage = isConnexionPage,
+                isMessagePage = isMessagePage
+            )
             content()
         }
     }

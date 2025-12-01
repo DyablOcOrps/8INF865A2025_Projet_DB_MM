@@ -50,7 +50,7 @@ fun AppNavigation() {
 
             val art = viewModel.getArtById(artId)
             if (art != null) {
-                DescriptionScreen(art, navController)
+                DescriptionScreen(art, navController = navController)
             }
         }
 
