@@ -14,6 +14,7 @@ import com.example.miarte.ui.screens.CommunicationScreen
 import com.example.miarte.ui.screens.DescriptionScreen
 import com.example.miarte.ui.screens.HomeScreen
 import com.example.miarte.ui.screens.ConversationScreen
+import com.example.miarte.ui.screens.MyArtsScreen
 import com.example.miarte.ui.screens.RegisterScreen
 import com.example.miarte.ui.screens.SettingsScreen
 import com.example.miarte.viewmodel.MiArteViewModel
@@ -44,11 +45,12 @@ fun AppNavigation() {
         }
         composable(
             "art_description/{artId}",
-            arguments = listOf(navArgument("artId") { type = NavType.IntType })
+            arguments = listOf(navArgument("artId") { type = NavType.StringType }) // 👈 Changement ici
         ) { backStackEntry ->
 
-            val artId = backStackEntry.arguments?.getInt("artId") ?: return@composable
+            val artId = backStackEntry.arguments?.getString("artId") ?: return@composable // 👈 Changement ici
 
+            // ATTENTION: Assurez-vous que getArtById dans le ViewModel accepte String (fait dans l'étape 2)
             val art = viewModel.getArtById(artId)
 
             if (art != null) {
@@ -66,6 +68,10 @@ fun AppNavigation() {
         ) { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username") ?: ""
             ConversationScreen(navController, username)
+        }
+
+        composable("myarts") {
+            MyArtsScreen(navController, viewModel)
         }
     }
 }

@@ -1,15 +1,17 @@
 package com.example.miarte.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.miarte.model.Art
 import com.example.miarte.model.Category
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.google.firebase.firestore.FirebaseFirestore // NOUVEAU
+import com.google.firebase.firestore.toObject // NOUVEAU
+import kotlinx.coroutines.flow.* // combine, stateIn, SharedFlow, etc.
 
-// Un petit état pour gérer le résultat de la connexion dans l'UI
+// État de l'authentification (inchangé)
 sealed class AuthState {
     object Idle : AuthState()
     object Loading : AuthState()
@@ -19,17 +21,17 @@ sealed class AuthState {
 
 class MiArteViewModel : ViewModel() {
 
-    // ===== FIREBASE AUTH =====
+    // ===== FIREBASE SETUP =====
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance() // NOUVEAU: Instance Firestore
 
-    // État de l'authentification observable par les écrans
+    // ===== FIREBASE AUTH (INCHANGÉ) =====
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     private val _isUserLoggedIn = MutableStateFlow(firebaseAuth.currentUser != null)
     val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
 
-    // Fonction de Connexion
     fun login(email: String, pass: String) {
         _authState.value = AuthState.Loading
         firebaseAuth.signInWithEmailAndPassword(email, pass)
@@ -42,12 +44,10 @@ class MiArteViewModel : ViewModel() {
             }
     }
 
-    // Fonction d'Inscription
     fun register(email: String, pass: String, firstName: String) {
         _authState.value = AuthState.Loading
         firebaseAuth.createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener { authResult ->
-                // Ajouter le prénom au profil Firebase
                 val user = authResult.user
                 val profileUpdates = UserProfileChangeRequest.Builder()
                     .setDisplayName(firstName)
@@ -73,7 +73,6 @@ class MiArteViewModel : ViewModel() {
             onResult(false, "Utilisateur non connecté")
             return
         }
-
         user.delete()
             .addOnSuccessListener {
                 _isUserLoggedIn.value = false
@@ -84,12 +83,11 @@ class MiArteViewModel : ViewModel() {
             }
     }
 
-    // Réinitialiser l'état (utile quand on quitte l'écran)
     fun resetAuthState() {
         _authState.value = AuthState.Idle
     }
 
-    // ===== CATEGORIES (Ton code existant) =====
+    // ===== CATEGORIES =====
     private val allCategory = Category(0, "Tous")
     private val _categories = listOf(
         allCategory,
@@ -101,36 +99,121 @@ class MiArteViewModel : ViewModel() {
     )
     val categoriesNoAll: List<Category> = _categories.filter { it.id != 0 }
     val categories: List<Category> = _categories
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
+
+    // État de la catégorie sélectionnée
+    private val _selectedCategory = MutableStateFlow<Category?>(allCategory)
     val selectedCategory = _selectedCategory.asStateFlow()
 
-    // ===== ARTS (Ton code existant) =====
-    private val fullArtList = mutableListOf<Art>()
-    private val _arts = MutableStateFlow<List<Art>>(fullArtList)
-    val arts: StateFlow<List<Art>> = _arts.asStateFlow()
+    // ===== ARTS (Logique Firestore) =====
 
-    fun selectCategory(category: Category) {
-        _selectedCategory.value = category
-        _arts.value = if (category.id == 0) fullArtList else fullArtList.filter { it.category.id == category.id }
+    // 1. Stocke TOUTES les oeuvres venant de Firestore (Source de vérité)
+    private val _allArtsFromFirestore = MutableStateFlow<List<Art>>(emptyList())
+
+    // 2. LISTE PUBLIQUE (arts) : combine les données brutes et le filtre de catégorie
+    val arts: StateFlow<List<Art>> = _allArtsFromFirestore
+        .combine(_selectedCategory) { allArts, selectedCat ->
+            // Filtre : si selectedCat est null ou si c'est la catégorie "Tous", on renvoie tout.
+            if (selectedCat == null || selectedCat.id == 0) {
+                allArts
+            } else {
+                // Sinon, on filtre par l'ID de la catégorie
+                allArts.filter { it.category.id == selectedCat.id }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000), // Maintient le Flow actif
+            initialValue = emptyList()
+        )
+
+    init {
+        // Lance l'écoute Firestore au démarrage du ViewModel
+        fetchArtsRealtime()
     }
 
+    // --- LECTURE : Écoute en temps réel de Firestore ---
+    private fun fetchArtsRealtime() {
+        db.collection("arts")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("MiArteViewModel", "Erreur écoute Firestore", error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    val artList = snapshot.documents.mapNotNull { doc ->
+                        // Conversion du document en objet Art. On force l'ID du document (String) dans l'objet Art.
+                        doc.toObject<Art>()?.copy(id = doc.id)
+                    }
+                    _allArtsFromFirestore.value = artList
+                }
+            }
+    }
+
+    // StateFlow qui contiendra la liste filtrée
+    private val _myArts = MutableStateFlow<List<Art>>(emptyList())
+    val myArts: StateFlow<List<Art>> = _myArts.asStateFlow()
+
+    fun fetchMyArts() {
+        // 1. Récupère l'UID de l'utilisateur actuel
+        val currentUserId = firebaseAuth.currentUser?.uid
+        if (currentUserId.isNullOrEmpty()) {
+            // Si l'utilisateur n'est pas connecté, la liste est vide.
+            _myArts.value = emptyList()
+            return
+        }
+
+        // 2. Requête Firestore avec filtre
+        db.collection("arts")
+            // Filtrer les documents où le champ "userId" est égal à l'UID de l'utilisateur connecté
+            .whereEqualTo("userId", currentUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Gérer l'erreur, par exemple : Log.e("MiArte", "Erreur lors du fetch : $error")
+                    return@addSnapshotListener
+                }
+
+                val artsList = snapshot?.toObjects(Art::class.java) ?: emptyList()
+                _myArts.value = artsList // Met à jour le StateFlow
+            }
+    }
+
+    // --- ACTION : Sélection de Catégorie (simplifié grâce à 'combine') ---
+    fun selectCategory(category: Category) {
+        // Si on clique sur la catégorie déjà active, on désélectionne (revient à "Tous")
+        if (_selectedCategory.value?.id == category.id) {
+            _selectedCategory.value = allCategory
+        } else {
+            // Sinon, on applique la nouvelle catégorie
+            _selectedCategory.value = category
+        }
+    }
+
+    // --- ÉCRITURE : Ajout d'une œuvre (remplace la logique locale) ---
     fun addArt(title: String, description: String, price: String, imageUrl: String, category: Category) {
         val authorName = firebaseAuth.currentUser?.displayName ?: "Anonyme"
-        val newId = (fullArtList.maxOfOrNull { it.id } ?: 0) + 1
+        val currentUserId = firebaseAuth.currentUser?.uid ?: return
+
+        // Crée l'objet Art, l'ID reste vide car Firestore le générera
         val newArt = Art(
-            id = newId,
+            id = "",
             title = title,
             imageUrl = imageUrl,
+            userId = currentUserId,
             author = authorName,
             description = description,
             price = price,
             category = category
         )
-        fullArtList.add(newArt)
-        _arts.value = fullArtList.toList()
+
+        // Ajout à la collection "arts"
+        db.collection("arts")
+            .add(newArt)
+            .addOnSuccessListener { Log.d("MiArteViewModel", "Oeuvre ajoutée") }
+            .addOnFailureListener { e -> Log.w("MiArteViewModel", "Erreur ajout", e) }
     }
 
-    fun getArtById(id: Int): Art? {
-        return fullArtList.firstOrNull { it.id == id }
+    // --- LECTURE PAR ID : Recherche locale (dans le cache du Flow) ---
+    // ATTENTION : L'ID est maintenant un String !
+    fun getArtById(id: String): Art? {
+        return _allArtsFromFirestore.value.firstOrNull { it.id == id }
     }
 }

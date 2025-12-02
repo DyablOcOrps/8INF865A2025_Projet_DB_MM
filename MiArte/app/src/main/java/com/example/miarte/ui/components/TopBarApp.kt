@@ -2,7 +2,6 @@ package com.example.miarte.ui.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -16,7 +15,9 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.rotate
 import com.example.miarte.viewmodel.MiArteViewModel
 
@@ -26,7 +27,8 @@ fun TopBarApp(navController: NavController,
               modifier: Modifier = Modifier,
               isConnexionOrSettingsPage: Boolean = true,
               isMessagePage: Boolean = true,
-              isHomePage: Boolean = true
+              isHomePage: Boolean = true,
+              isMyArtsPage: Boolean = true
     ) {
 
     val isUserLoggedIn = viewModel.isUserLoggedIn.collectAsState()
@@ -101,6 +103,22 @@ fun TopBarApp(navController: NavController,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Home,
+                        contentDescription = "Messages",
+                        tint = Color.White,
+                    )
+                }
+            }
+
+            if (isMyArtsPage) {
+                IconButton(
+                    onClick = { navController.navigate("myarts") },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)  // placé à gauche et en haut
+                        .padding(top = 40.dp)     // descend un peu le bouton
+                        .padding(horizontal = 40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
                         contentDescription = "Messages",
                         tint = Color.White,
                     )

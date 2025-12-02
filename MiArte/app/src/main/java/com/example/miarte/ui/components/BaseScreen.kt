@@ -16,6 +16,7 @@ fun BaseScreen(
     isConnexionOrSettingsPage: Boolean = true,
     isMessagePage: Boolean = true,
     isHomePage: Boolean = true,
+    isMyArtsPage: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -29,7 +30,8 @@ fun BaseScreen(
                 viewModel = viewModel,
                 isConnexionOrSettingsPage= isConnexionOrSettingsPage,
                 isMessagePage = isMessagePage,
-                isHomePage = isHomePage
+                isHomePage = isHomePage,
+                isMyArtsPage = isMyArtsPage
             )
             content()
         }
