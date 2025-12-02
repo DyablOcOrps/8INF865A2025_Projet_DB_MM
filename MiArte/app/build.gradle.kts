@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.ui)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

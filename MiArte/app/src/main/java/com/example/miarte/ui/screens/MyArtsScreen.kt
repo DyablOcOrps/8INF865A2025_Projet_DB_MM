@@ -1,5 +1,6 @@
 package com.example.miarte.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 
@@ -50,13 +52,12 @@ fun MyArtsScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(myArts) { art ->
-                        // Réutilisation de la carte existante (ArtCard de HomeScreen)
-                        // Note: Assurez-vous d'avoir une version modifiée pour permettre
-                        // l'édition/suppression sur cet écran, mais pour l'instant, on réutilise.
-                        ArtCard(
-                            art = art,
-                            viewModel = viewModel,
-                            navController = navController,
+                        Image(
+                            painter = rememberAsyncImagePainter(art.imageUrl),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
                         )
                     }
                 }

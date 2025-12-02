@@ -33,6 +33,7 @@ import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Category
 import com.example.miarte.ui.theme.GreenButton
+import com.example.miarte.ui.theme.GreenCategoryList
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,8 +75,9 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
             description.isNotBlank() &&
             price.isNotBlank() &&
             imageUri != null &&
-            selectedCategory != null &&
-            expertChecked
+            selectedCategory != null
+            // selectedCategory != null &&
+            // expertChecked
 
     fun submitArt() {
         viewModel.addArt(
@@ -214,19 +216,20 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                     modifier = Modifier.weight(1f)
                 )
 
-                Button(
-                    onClick = { expertChecked = !expertChecked },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (expertChecked) Color(0xFF4CAF50) else Color.Gray
-                    )
-                ) {
-                    Text(if (expertChecked) "Validé ✅" else "Check")
-                }
+                //Button(
+                //    onClick = { expertChecked = !expertChecked },
+                //    colors = ButtonDefaults.buttonColors(
+                //        containerColor = if (expertChecked) Color(0xFF4CAF50) else Color.Gray
+                //    )
+                //) {
+                //    Text(if (expertChecked) "Validé ✅" else "Check")
+                //}
             }
 
             Button(
                 onClick = { submitArt() },
                 enabled = allFieldsFilled,
+                colors = ButtonDefaults.buttonColors(containerColor = GreenCategoryList),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)

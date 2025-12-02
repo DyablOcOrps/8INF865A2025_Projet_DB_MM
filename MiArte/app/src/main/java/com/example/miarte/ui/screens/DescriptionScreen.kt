@@ -79,12 +79,12 @@ fun DescriptionScreen(
                 ) {
                     Text("Retour")
                 }
-                Button(
-                    onClick = { navController.navigate("conversation/${art.author}") },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-                ) {
-                    Text("Contact")
-                }
+                //Button(
+                //    onClick = { navController.navigate("conversation/${art.author}") },
+                //    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                //) {
+                //    Text("Contact")
+                //}
             }
         }
     }

@@ -77,21 +77,21 @@ fun TopBarApp(navController: NavController,
             }
 
             // 🔹 Bouton des messages à gauche
-            if (isMessagePage) {
-                IconButton(
-                    onClick = { navController.navigate("communication") },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)  // placé à gauche et en haut
-                        .padding(top = 36.dp)     // descend un peu le bouton
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Send,
-                        contentDescription = "Messages",
-                        tint = Color.White,
-                        modifier = Modifier.rotate(-20f)
-                    )
-                }
-            }
+            //if (isMessagePage) {
+            //    IconButton(
+            //        onClick = { navController.navigate("communication") },
+            //        modifier = Modifier
+            //            .align(Alignment.TopStart)  // placé à gauche et en haut
+            //            .padding(top = 36.dp)     // descend un peu le bouton
+            //    ) {
+            //        Icon(
+            //            imageVector = Icons.Filled.Send,
+            //            contentDescription = "Messages",
+            //            tint = Color.White,
+            //            modifier = Modifier.rotate(-20f)
+            //        )
+            //    }
+            //}
 
             if (isHomePage) {
                 IconButton(
@@ -115,7 +115,7 @@ fun TopBarApp(navController: NavController,
                     modifier = Modifier
                         .align(Alignment.TopStart)  // placé à gauche et en haut
                         .padding(top = 40.dp)     // descend un peu le bouton
-                        .padding(horizontal = 40.dp)
+                        // .padding(horizontal = 40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Star,
