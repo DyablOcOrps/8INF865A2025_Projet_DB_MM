@@ -1,5 +1,6 @@
 package com.example.miarte.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,11 +17,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Art
@@ -208,11 +211,13 @@ fun ArtCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(8.dp)
         ) {
-            Box(
+            Image(
+                painter = rememberAsyncImagePainter(art.imageUrl),
+                contentDescription = null,
                 modifier = Modifier
                     .height(180.dp)
-                    .fillMaxWidth()
-                    .background(Color.Gray)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text("Auteur: ${art.author}", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)

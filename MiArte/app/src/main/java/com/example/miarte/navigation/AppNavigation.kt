@@ -1,6 +1,7 @@
 package com.example.miarte.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,37 +21,42 @@ import com.example.miarte.viewmodel.MiArteViewModel
 @Composable
 fun AppNavigation() {
     val navController: NavHostController = rememberNavController()
+    val viewModel: MiArteViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            HomeScreen(navController)
+            HomeScreen(navController, viewModel)
         }
         composable("settings") {
-            SettingsScreen(navController)
+            SettingsScreen(navController, viewModel)
         }
         composable("authentification") {
-            AuthentificationScreen(navController)
+            AuthentificationScreen(navController, viewModel)
         }
         composable("communication") {
-            CommunicationScreen(navController)
+            CommunicationScreen(navController, viewModel)
         }
         composable("add_art") {
-            AddArtScreen(navController)
+            AddArtScreen(navController, viewModel)
         }
         composable("register") {
-            RegisterScreen(navController)
+            RegisterScreen(navController, viewModel)
         }
         composable(
             "art_description/{artId}",
             arguments = listOf(navArgument("artId") { type = NavType.IntType })
         ) { backStackEntry ->
 
-            val viewModel: MiArteViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
             val artId = backStackEntry.arguments?.getInt("artId") ?: return@composable
 
             val art = viewModel.getArtById(artId)
+
             if (art != null) {
-                DescriptionScreen(art, navController = navController)
+                DescriptionScreen(
+                    art = art,
+                    viewModel = viewModel,
+                    navController = navController
+                )
             }
         }
 

@@ -105,11 +105,7 @@ class MiArteViewModel : ViewModel() {
     val selectedCategory = _selectedCategory.asStateFlow()
 
     // ===== ARTS (Ton code existant) =====
-    private val fullArtList = mutableListOf(
-        Art(1, "Peinture Rouge", "", "Alice", "Une peinture rouge", "100", _categories[1]),
-        Art(2, "Jazz Studio", "", "Bob", "Album jazz", "70", _categories[2]),
-        Art(3, "Roman court", "", "Claire", "Petite histoire", "15", _categories[3])
-    )
+    private val fullArtList = mutableListOf<Art>()
     private val _arts = MutableStateFlow<List<Art>>(fullArtList)
     val arts: StateFlow<List<Art>> = _arts.asStateFlow()
 
@@ -119,8 +115,17 @@ class MiArteViewModel : ViewModel() {
     }
 
     fun addArt(title: String, description: String, price: String, imageUrl: String, category: Category) {
+        val authorName = firebaseAuth.currentUser?.displayName ?: "Anonyme"
         val newId = (fullArtList.maxOfOrNull { it.id } ?: 0) + 1
-        val newArt = Art(newId, title, imageUrl, "Utilisateur", description, price, category)
+        val newArt = Art(
+            id = newId,
+            title = title,
+            imageUrl = imageUrl,
+            author = authorName,
+            description = description,
+            price = price,
+            category = category
+        )
         fullArtList.add(newArt)
         _arts.value = fullArtList.toList()
     }
