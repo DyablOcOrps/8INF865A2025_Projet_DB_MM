@@ -13,8 +13,9 @@ fun BaseScreen(
     navController: NavController,
     viewModel: MiArteViewModel,
     modifier: Modifier = Modifier,
-    isConnexionPage: Boolean = true,
+    isConnexionOrSettingsPage: Boolean = true,
     isMessagePage: Boolean = true,
+    isHomePage: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -26,8 +27,9 @@ fun BaseScreen(
             TopBarApp(
                 navController = navController,
                 viewModel = viewModel,
-                isConnexionPage = isConnexionPage,
-                isMessagePage = isMessagePage
+                isConnexionOrSettingsPage= isConnexionOrSettingsPage,
+                isMessagePage = isMessagePage,
+                isHomePage = isHomePage
             )
             content()
         }

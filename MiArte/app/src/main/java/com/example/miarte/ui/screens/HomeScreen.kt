@@ -35,7 +35,7 @@ fun HomeScreen(
 ) {
     val arts = viewModel.arts.collectAsState().value
 
-    BaseScreen(navController, viewModel) {
+    BaseScreen(navController, viewModel, isHomePage = false) {
         Box(modifier = Modifier.fillMaxSize()) {
 
             Column(modifier = Modifier.fillMaxSize()) {

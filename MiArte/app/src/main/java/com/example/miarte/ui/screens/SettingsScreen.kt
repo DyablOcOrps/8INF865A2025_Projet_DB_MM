@@ -14,10 +14,12 @@ import com.example.miarte.viewmodel.MiArteViewModel
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: MiArteViewModel = viewModel()
+    viewModel: MiArteViewModel = viewModel(),
+    isConnexionOrSettingsPage: Boolean = false
 ) {
     BaseScreen(
         navController = navController,
+        isConnexionOrSettingsPage = isConnexionOrSettingsPage,
         viewModel = viewModel
     ) {
         Column(

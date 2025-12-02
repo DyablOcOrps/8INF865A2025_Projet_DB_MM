@@ -14,6 +14,7 @@ import com.example.miarte.ui.theme.GreenTopBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.rotate
@@ -23,8 +24,10 @@ import com.example.miarte.viewmodel.MiArteViewModel
 fun TopBarApp(navController: NavController,
               viewModel: MiArteViewModel,
               modifier: Modifier = Modifier,
-              isConnexionPage: Boolean = true,
-              isMessagePage: Boolean = true) {
+              isConnexionOrSettingsPage: Boolean = true,
+              isMessagePage: Boolean = true,
+              isHomePage: Boolean = true
+    ) {
 
     val isUserLoggedIn = viewModel.isUserLoggedIn.collectAsState()
 
@@ -47,8 +50,8 @@ fun TopBarApp(navController: NavController,
             )
 
             // 🔹 Bouton d'identification à droite
-            if (isConnexionPage) {
-                Button(
+            if (isConnexionOrSettingsPage) {
+                IconButton(
                     onClick = {
                         if (isUserLoggedIn.value) {
                             navController.navigate("settings")
@@ -56,7 +59,6 @@ fun TopBarApp(navController: NavController,
                             navController.navigate("authentification")
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 36.dp)
@@ -74,9 +76,8 @@ fun TopBarApp(navController: NavController,
 
             // 🔹 Bouton des messages à gauche
             if (isMessagePage) {
-                Button(
+                IconButton(
                     onClick = { navController.navigate("communication") },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                     modifier = Modifier
                         .align(Alignment.TopStart)  // placé à gauche et en haut
                         .padding(top = 36.dp)     // descend un peu le bouton
@@ -86,6 +87,22 @@ fun TopBarApp(navController: NavController,
                         contentDescription = "Messages",
                         tint = Color.White,
                         modifier = Modifier.rotate(-20f)
+                    )
+                }
+            }
+
+            if (isHomePage) {
+                IconButton(
+                    onClick = { navController.navigate("home") },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)  // placé à gauche et en haut
+                        .padding(top = 36.dp)     // descend un peu le bouton
+                        .padding(horizontal = 40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Messages",
+                        tint = Color.White,
                     )
                 }
             }
