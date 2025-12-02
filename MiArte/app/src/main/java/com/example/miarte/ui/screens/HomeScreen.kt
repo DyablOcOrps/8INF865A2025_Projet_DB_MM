@@ -60,7 +60,7 @@ fun HomeScreen(
                     .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                ButtonAdd(navController)
+                ButtonAdd(navController, viewModel)
             }
         }
     }
@@ -109,17 +109,46 @@ fun CategoryChip(
 }
 
 @Composable
-fun ButtonAdd(navController: NavController) {
-    FloatingActionButton(
-        onClick = { navController.navigate("add_art") },
-        containerColor = GreenButton,
-        modifier = Modifier.padding(bottom = 24.dp)
+fun ButtonAdd(
+    navController: NavController,
+    viewModel: MiArteViewModel
+) {
+    val isUserLoggedIn = viewModel.isUserLoggedIn.collectAsState()
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.padding(bottom = 24.dp),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Text(
-            text = "+",
-            color = Color.White,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
+        FloatingActionButton(
+            onClick = {
+                if (isUserLoggedIn.value) {
+                    navController.navigate("add_art")
+                } else {
+                    showDialog = true
+                }
+            },
+            containerColor = GreenButton
+        ) {
+            Text(
+                text = "+",
+                color = Color.White,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+
+    // 🔽 Affichage de la bulle si nécessaire
+    if (showDialog) {
+        LoginBubbleDialog(
+            onDismiss = { showDialog = false },
+            onGoToLogin = {
+                showDialog = false
+                navController.navigate("authentification")
+            },
+            message = "Veuillez vous identifier pour ajouter une œuvre."
         )
     }
 }
@@ -127,7 +156,8 @@ fun ButtonAdd(navController: NavController) {
 @Composable
 fun LoginBubbleDialog(
     onDismiss: () -> Unit,
-    onGoToLogin: () -> Unit
+    onGoToLogin: () -> Unit,
+    message : String
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -145,7 +175,7 @@ fun LoginBubbleDialog(
             Text("Pour continuer : connectez-vous")
         },
         text = {
-            Text("Veuillez vous identifier pour accéder aux détails de cette œuvre.")
+            Text(message)
         }
     )
 }
@@ -195,7 +225,8 @@ fun ArtCard(
                 onGoToLogin = {
                     showDialog = false
                     navController.navigate("authentification")
-                }
+                },
+                message = "Veuillez vous identifier pour accéder aux détails de cette œuvre."
             )
         }
     }
