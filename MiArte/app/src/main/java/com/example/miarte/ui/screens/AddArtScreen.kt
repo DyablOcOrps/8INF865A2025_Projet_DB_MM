@@ -28,12 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Category
 import com.example.miarte.ui.theme.GreenButton
 import com.example.miarte.ui.theme.GreenCategoryList
+import com.example.miarte.ui.theme.GreenTopBar
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +44,6 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
-    var expertChecked by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -52,13 +51,14 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    // === IMAGE PICKERS ===
+    // Launcher pour ouvrir la galerie d'image du téléphone
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) imageUri = uri
     }
 
+    // Launcher pour la caméra et capture d'image
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
@@ -71,22 +71,21 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
         }
     }
 
+    // Vérifie si tout les champs sont complétés avant de soumettre l'oeuvre
     val allFieldsFilled = title.isNotBlank() &&
             description.isNotBlank() &&
             price.isNotBlank() &&
             imageUri != null &&
             selectedCategory != null
-            // selectedCategory != null &&
-            // expertChecked
 
+    // Soumission de l'art
     fun submitArt() {
-        // On s'assure que l'URI n'est pas null (déjà vérifié par allFieldsFilled, mais sécurité en plus)
         if (imageUri != null) {
             viewModel.addArt(
                 title = title,
                 description = description,
                 price = price,
-                imageUri = imageUri!!, // On passe l'Uri directement, pas .toString()
+                imageUri = imageUri!!,
                 category = selectedCategory!!
             )
             navController.navigate("home")
@@ -101,7 +100,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // IMAGE
+            // Zone pour ajouter l'image (gallerie ou photo)
             Box(
                 modifier = Modifier
                     .size(180.dp)
@@ -138,6 +137,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 }
             }
 
+            // Zone pour écrire le titre
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -151,6 +151,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 )
             )
 
+            // Zone pour écrire la description
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -164,7 +165,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 )
             )
 
-            // CATEGORIE
+            // Zone pour sélectionner la catégorie
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
@@ -200,6 +201,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 }
             }
 
+            // Zone pour sélectionner le prix
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -218,21 +220,13 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                     ),
                     modifier = Modifier.weight(1f)
                 )
-
-                //Button(
-                //    onClick = { expertChecked = !expertChecked },
-                //    colors = ButtonDefaults.buttonColors(
-                //        containerColor = if (expertChecked) Color(0xFF4CAF50) else Color.Gray
-                //    )
-                //) {
-                //    Text(if (expertChecked) "Validé ✅" else "Check")
-                //}
             }
 
+            // Bouton pour continuer
             Button(
                 onClick = { submitArt() },
                 enabled = allFieldsFilled,
-                colors = ButtonDefaults.buttonColors(containerColor = GreenCategoryList),
+                colors = ButtonDefaults.buttonColors(containerColor = GreenTopBar),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)
@@ -240,6 +234,7 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
                 Text("Continuer")
             }
 
+            // bouton pour abandonner l'ajout
             Button(
                 onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)

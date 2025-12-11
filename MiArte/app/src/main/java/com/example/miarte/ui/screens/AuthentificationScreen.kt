@@ -23,16 +23,15 @@ import com.example.miarte.viewmodel.MiArteViewModel
 @Composable
 fun AuthentificationScreen(
     navController: NavController,
-    viewModel: MiArteViewModel = androidx.lifecycle.viewmodel.compose.viewModel() // Initialisation par défaut
+    viewModel: MiArteViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // On observe l'état de l'authentification
+    // Vérification si l'utilisateur est authentifié
     val authState by viewModel.authState.collectAsState()
     val context = LocalContext.current
 
-    // Réagir aux changements d'état (Succès ou Erreur)
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Success -> {
@@ -49,7 +48,6 @@ fun AuthentificationScreen(
         }
     }
 
-    // On définit l'action de connexion ici pour la réutiliser
     val onLoginClick = {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             viewModel.login(email, password)
@@ -74,10 +72,10 @@ fun AuthentificationScreen(
                 onValueChange = { email = it },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true, // Important pour empêcher le retour à la ligne visuel
+                singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email, // Affiche le @
-                    imeAction = ImeAction.Next // Affiche la flèche "Suivant"
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
                 )
             )
 
@@ -92,11 +90,11 @@ fun AuthentificationScreen(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done // Affiche la coche "Validation"
+                    imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        onLoginClick() // Lance la connexion quand on valide au clavier
+                        onLoginClick()
                     }
                 )
             )

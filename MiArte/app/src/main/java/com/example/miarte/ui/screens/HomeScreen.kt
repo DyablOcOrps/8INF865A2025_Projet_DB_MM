@@ -1,7 +1,6 @@
 package com.example.miarte.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +27,7 @@ import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.viewmodel.MiArteViewModel
 import com.example.miarte.model.Art
 import com.example.miarte.model.Category
+import com.example.miarte.ui.theme.GreenBackground
 import com.example.miarte.ui.theme.GreenButton
 import com.example.miarte.ui.theme.GreenCategoryList
 
@@ -36,6 +36,8 @@ fun HomeScreen(
     navController: NavController,
     viewModel: MiArteViewModel = viewModel()
 ) {
+
+    // Récupération de la liste des arts
     val arts = viewModel.arts.collectAsState().value
 
     BaseScreen(navController, viewModel, isHomePage = false) {
@@ -74,8 +76,9 @@ fun CategoryList(
     viewModel: MiArteViewModel,
     modifier: Modifier = Modifier
 ) {
+
+    // Liste des catégories disponible
     val categories = viewModel.categories
-    // 💡 Récupérer la catégorie sélectionnée depuis le ViewModel
     val selectedCategory by viewModel.selectedCategory.collectAsState()
 
     Surface(
@@ -89,10 +92,8 @@ fun CategoryList(
             items(categories) { category ->
                 CategoryChip(
                     category = category,
-                    // 💡 Passer la catégorie sélectionnée pour la comparaison
                     isSelected = category == selectedCategory,
                     onClick = {
-                        // 💡 Logique pour désélectionner si on clique à nouveau sur la même catégorie
                         val newCategory = if (category == selectedCategory) categories.first() else category
                         viewModel.selectCategory(newCategory)
                     }
@@ -105,34 +106,32 @@ fun CategoryList(
 @Composable
 fun CategoryChip(
     category: Category,
-    isSelected: Boolean, // 💡 Nouveau paramètre
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // 💡 Définir la couleur du conteneur en fonction de l'état
+    // Couleur de fond
     val containerColor = if (isSelected) {
-        Color.White // Couleur pour la catégorie sélectionnée (vous pouvez la changer)
+        GreenBackground
     } else {
-        GreenButton // Couleur par défaut
+        GreenButton
     }
 
-    // 💡 Définir la couleur du texte en fonction de l'état
     val textColor = if (isSelected) {
-        GreenButton // Couleur du texte pour la sélection
+        GreenButton
     } else {
-        Color.White // Couleur du texte par défaut
+        Color.White
     }
 
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = containerColor), // Utiliser la couleur dynamique
-        // Ajouter un border si vous voulez que la distinction soit plus claire
+        colors = ButtonDefaults.buttonColors(containerColor = containerColor),
         border = if (isSelected) ButtonDefaults.outlinedButtonBorder.copy(
             brush = androidx.compose.ui.graphics.SolidColor(GreenButton)
         ) else null
     ) {
         Text(
             text = category.name,
-            color = textColor, // Utiliser la couleur de texte dynamique
+            color = textColor,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
@@ -171,7 +170,7 @@ fun ButtonAdd(
         }
     }
 
-    // 🔽 Affichage de la bulle si nécessaire
+    // Affichage de la bulle si nécessaire
     if (showDialog) {
         LoginBubbleDialog(
             onDismiss = { showDialog = false },

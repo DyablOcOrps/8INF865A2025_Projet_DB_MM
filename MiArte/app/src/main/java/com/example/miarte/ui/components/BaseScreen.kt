@@ -14,7 +14,6 @@ fun BaseScreen(
     viewModel: MiArteViewModel,
     modifier: Modifier = Modifier,
     isConnexionOrSettingsPage: Boolean = true,
-    isMessagePage: Boolean = true,
     isHomePage: Boolean = true,
     isMyArtsPage: Boolean = true,
     content: @Composable () -> Unit
@@ -25,11 +24,11 @@ fun BaseScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            // Barre commune à chaque page en haut de l'écran
             TopBarApp(
                 navController = navController,
                 viewModel = viewModel,
                 isConnexionOrSettingsPage= isConnexionOrSettingsPage,
-                isMessagePage = isMessagePage,
                 isHomePage = isHomePage,
                 isMyArtsPage = isMyArtsPage
             )

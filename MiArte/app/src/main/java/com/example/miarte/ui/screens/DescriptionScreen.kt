@@ -64,14 +64,13 @@ fun DescriptionScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // --- ZONE DES BOUTONS ---
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // 1. Bouton Retour (Toujours visible)
+                // Bouton pour revenir en arrière
                 Button(
                     onClick = { navController.popBackStack() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
@@ -79,9 +78,9 @@ fun DescriptionScreen(
                     Text("Retour")
                 }
 
-                // 2. Logique d'affichage conditionnel
+                // Vérifie si on est propriétaire de l'art
                 if (isOwner) {
-                    // Si je suis le propriétaire -> Bouton Supprimer
+                    // Propriétaire -> Bouton Supprimer
                     Button(
                         onClick = {
                             viewModel.deleteArt(
@@ -100,14 +99,12 @@ fun DescriptionScreen(
                         Text("Supprimer")
                     }
                 } else {
-                    // Si je NE suis PAS le propriétaire -> Bouton Payer
+                    // Pas le propriétaire -> Bouton Payer
                     Button(
                         onClick = {
-                            // Pour l'instant, on affiche juste un message
+                            // Simulation
                             Toast.makeText(context, "Paiement de ${art.price}€ simulé !", Toast.LENGTH_SHORT).show()
 
-                            // Plus tard, vous pourrez naviguer vers un écran de paiement :
-                            // navController.navigate("payment/${art.id}")
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
                     ) {

@@ -33,7 +33,7 @@ fun SettingsScreen(
             Text("Page de paramètres", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 🔹 Bouton Déconnexion
+            // Bouton Déconnexion
             Button(
                 onClick = {
                     viewModel.logout()
@@ -48,7 +48,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔹 Bouton Supprimer compte
+            // Bouton Supprimer compte
             Button(
                 onClick = {
                     viewModel.deleteAccount { success, error ->
