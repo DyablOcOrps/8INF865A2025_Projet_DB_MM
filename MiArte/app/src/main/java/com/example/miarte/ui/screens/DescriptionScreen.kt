@@ -1,16 +1,10 @@
 package com.example.miarte.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -18,17 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.miarte.model.Art
 import com.example.miarte.ui.components.BaseScreen
 import com.example.miarte.ui.theme.GreenButton
-import com.example.miarte.ui.theme.GreenCategoryList
-import com.example.miarte.ui.theme.GreenTopBar
 import com.example.miarte.viewmodel.MiArteViewModel
 
 @Composable
@@ -37,11 +29,15 @@ fun DescriptionScreen(
     viewModel: MiArteViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val isOwner = viewModel.isArtOwner(art)
+
     BaseScreen(navController, viewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = art.title,
@@ -68,23 +64,56 @@ fun DescriptionScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Boutons en bas
+            // --- ZONE DES BOUTONS ---
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // 1. Bouton Retour (Toujours visible)
                 Button(
                     onClick = { navController.popBackStack() },
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                 ) {
                     Text("Retour")
                 }
-                //Button(
-                //    onClick = { navController.navigate("conversation/${art.author}") },
-                //    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-                //) {
-                //    Text("Contact")
-                //}
+
+                // 2. Logique d'affichage conditionnel
+                if (isOwner) {
+                    // Si je suis le propriétaire -> Bouton Supprimer
+                    Button(
+                        onClick = {
+                            viewModel.deleteArt(
+                                art = art,
+                                onSuccess = {
+                                    Toast.makeText(context, "Œuvre supprimée !", Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack()
+                                },
+                                onError = { errorMsg ->
+                                    Toast.makeText(context, "Erreur : $errorMsg", Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text("Supprimer")
+                    }
+                } else {
+                    // Si je NE suis PAS le propriétaire -> Bouton Payer
+                    Button(
+                        onClick = {
+                            // Pour l'instant, on affiche juste un message
+                            Toast.makeText(context, "Paiement de ${art.price}€ simulé !", Toast.LENGTH_SHORT).show()
+
+                            // Plus tard, vous pourrez naviguer vers un écran de paiement :
+                            // navController.navigate("payment/${art.id}")
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                    ) {
+                        Text("Payer ${art.price} €")
+                    }
+                }
             }
         }
     }

@@ -98,7 +98,8 @@ class MiArteViewModel : ViewModel() {
         Category(2, "Musique"),
         Category(3, "Écriture"),
         Category(4, "Dessin"),
-        Category(5, "Jeux Vidéos")
+        Category(5, "Jeux Vidéos"),
+        Category(6, "Sculpture")
     )
 
     // État mutable pour la catégorie sélectionnée
@@ -114,6 +115,8 @@ class MiArteViewModel : ViewModel() {
 
     // 1. Stocke TOUTES les oeuvres venant de Firestore (Source de vérité)
     private val _allArtsFromFirestore = MutableStateFlow<List<Art>>(emptyList())
+
+    val allArts: StateFlow<List<Art>> = _allArtsFromFirestore.asStateFlow()
 
     // 2. LISTE PUBLIQUE (arts) : combine les données brutes et le filtre de catégorie
     val arts: StateFlow<List<Art>> = _allArtsFromFirestore
@@ -159,26 +162,28 @@ class MiArteViewModel : ViewModel() {
     val myArts: StateFlow<List<Art>> = _myArts.asStateFlow()
 
     fun fetchMyArts() {
-        // 1. Récupère l'UID de l'utilisateur actuel
         val currentUserId = firebaseAuth.currentUser?.uid
         if (currentUserId.isNullOrEmpty()) {
-            // Si l'utilisateur n'est pas connecté, la liste est vide.
             _myArts.value = emptyList()
             return
         }
 
-        // 2. Requête Firestore avec filtre
         db.collection("arts")
-            // Filtrer les documents où le champ "userId" est égal à l'UID de l'utilisateur connecté
             .whereEqualTo("userId", currentUserId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    // Gérer l'erreur, par exemple : Log.e("MiArte", "Erreur lors du fetch : $error")
                     return@addSnapshotListener
                 }
 
-                val artsList = snapshot?.toObjects(Art::class.java) ?: emptyList()
-                _myArts.value = artsList // Met à jour le StateFlow
+                // --- CORRECTION ICI ---
+                // Au lieu de snapshot.toObjects(...), on parcourt les documents un par un
+                // pour copier manuellement l'ID du document dans l'objet Art.
+                if (snapshot != null) {
+                    val artsList = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Art::class.java)?.copy(id = doc.id)
+                    }
+                    _myArts.value = artsList
+                }
             }
     }
 
@@ -236,5 +241,35 @@ class MiArteViewModel : ViewModel() {
     // ATTENTION : L'ID est maintenant un String !
     fun getArtById(id: String): Art? {
         return _allArtsFromFirestore.value.firstOrNull { it.id == id }
+    }
+
+    // Utile pour savoir si on doit afficher le bouton poubelle
+    fun isArtOwner(art: Art): Boolean {
+        return firebaseAuth.currentUser?.uid == art.userId
+    }
+
+    // Fonction de suppression complète (Image + Base de données)
+    fun deleteArt(art: Art, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        // 1. Si l'image existe et vient de Firebase, on la supprime d'abord
+        if (art.imageUrl.startsWith("https://firebasestorage")) {
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(art.imageUrl)
+            storageRef.delete().addOnSuccessListener {
+                // 2. Si l'image est supprimée, on supprime le document Firestore
+                deleteArtDocument(art.id, onSuccess, onError)
+            }.addOnFailureListener {
+                // Même si l'image plante, on essaye quand même de supprimer le document
+                deleteArtDocument(art.id, onSuccess, onError)
+            }
+        } else {
+            // Pas d'image Firebase, on supprime direct le document
+            deleteArtDocument(art.id, onSuccess, onError)
+        }
+    }
+
+    private fun deleteArtDocument(artId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        db.collection("arts").document(artId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onError(e.message ?: "Erreur inconnue") }
     }
 }

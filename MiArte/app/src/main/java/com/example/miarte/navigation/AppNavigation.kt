@@ -1,6 +1,13 @@
 package com.example.miarte.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -43,22 +50,39 @@ fun AppNavigation() {
         composable("register") {
             RegisterScreen(navController, viewModel)
         }
+
         composable(
             "art_description/{artId}",
-            arguments = listOf(navArgument("artId") { type = NavType.StringType }) // 👈 Changement ici
+            arguments = listOf(navArgument("artId") { type = NavType.StringType })
         ) { backStackEntry ->
+            val artId = backStackEntry.arguments?.getString("artId") ?: return@composable
 
-            val artId = backStackEntry.arguments?.getString("artId") ?: return@composable // 👈 Changement ici
+            // CORRECTION ICI 👇
 
-            // ATTENTION: Assurez-vous que getArtById dans le ViewModel accepte String (fait dans l'étape 2)
-            val art = viewModel.getArtById(artId)
+            // 1. On observe la liste complète en temps réel
+            // (Note : assurez-vous d'avoir fait l'étape 1 dans le ViewModel)
+            val allArts by viewModel.allArts.collectAsState()
 
+            // 2. On cherche l'art correspondant dans la liste
+            val art = allArts.find { it.id == artId }
+
+            // 3. Affichage conditionnel
             if (art != null) {
+                // Si on a trouvé l'art, on l'affiche
                 DescriptionScreen(
                     art = art,
                     viewModel = viewModel,
                     navController = navController
                 )
+            } else {
+                // Si l'art est null (en cours de chargement ou ID invalide),
+                // on affiche une roue de chargement au lieu d'un écran blanc.
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
 

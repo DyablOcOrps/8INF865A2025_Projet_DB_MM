@@ -13,7 +13,10 @@ import com.example.miarte.ui.theme.GreenTopBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArtTrack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.collectAsState
@@ -118,9 +121,11 @@ fun TopBarApp(navController: NavController,
                         // .padding(horizontal = 40.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = "Messages",
+                        imageVector = Icons.Filled.ArtTrack,
+                        contentDescription = "MyArts",
+                        modifier = Modifier.size(32.dp),
                         tint = Color.White,
+
                     )
                 }
             }
