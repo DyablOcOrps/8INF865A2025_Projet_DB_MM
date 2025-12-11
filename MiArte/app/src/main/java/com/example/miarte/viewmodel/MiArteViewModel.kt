@@ -272,36 +272,4 @@ class MiArteViewModel : ViewModel() {
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onError(e.message ?: "Erreur inconnue") }
     }
-
-    // Envoi d'une notification d'achat (simulée par un message)
-    fun sendPurchaseNotification(art: Art, onSuccess: () -> Unit, onError: (String) -> Unit) {
-        val currentUser = firebaseAuth.currentUser
-
-        if (currentUser == null) {
-            onError("Vous devez être connecté pour envoyer une notification.")
-            return
-        }
-
-        // On prépare les données du message
-        val notificationData = hashMapOf(
-            "senderId" to currentUser.uid,
-            "senderName" to (currentUser.displayName ?: "Un acheteur"),
-            "receiverId" to art.userId, // L'ID du propriétaire de l'art
-            "artId" to art.id,
-            "artTitle" to art.title,
-            "message" to "Bonjour, je suis intéressé par l'achat de votre œuvre : ${art.title} au prix de ${art.price}€.",
-            "timestamp" to System.currentTimeMillis(),
-            "isRead" to false
-        )
-
-        // On l'ajoute dans une collection "messages"
-        db.collection("messages")
-            .add(notificationData)
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener { e ->
-                onError(e.message ?: "Erreur d'envoi")
-            }
-    }
 }

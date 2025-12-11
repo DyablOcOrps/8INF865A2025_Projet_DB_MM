@@ -100,22 +100,18 @@ fun DescriptionScreen(
                         Text("Supprimer")
                     }
                 } else {
-                    // Si je NE suis PAS le propriétaire -> Bouton Payer / Contacter
+                    // Si je NE suis PAS le propriétaire -> Bouton Payer
                     Button(
                         onClick = {
-                            viewModel.sendPurchaseNotification(
-                                art = art,
-                                onSuccess = {
-                                    Toast.makeText(context, "Notification envoyée au propriétaire !", Toast.LENGTH_LONG).show()
-                                },
-                                onError = { errorMsg ->
-                                    Toast.makeText(context, "Erreur : $errorMsg", Toast.LENGTH_LONG).show()
-                                }
-                            )
+                            // Pour l'instant, on affiche juste un message
+                            Toast.makeText(context, "Paiement de ${art.price}€ simulé !", Toast.LENGTH_SHORT).show()
+
+                            // Plus tard, vous pourrez naviguer vers un écran de paiement :
+                            // navController.navigate("payment/${art.id}")
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
                     ) {
-                        Text("Acheter / Contacter")
+                        Text("Payer ${art.price} €")
                     }
                 }
             }
