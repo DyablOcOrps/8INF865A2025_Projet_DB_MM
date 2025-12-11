@@ -75,9 +75,12 @@ fun CategoryList(
     modifier: Modifier = Modifier
 ) {
     val categories = viewModel.categories
+    // 💡 Récupérer la catégorie sélectionnée depuis le ViewModel
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
+
     Surface(
         color = GreenCategoryList,
-        modifier = modifier.fillMaxWidth() // Pour prendre toute la largeur dispo
+        modifier = modifier.fillMaxWidth()
     ) {
         LazyRow(
             modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -86,7 +89,13 @@ fun CategoryList(
             items(categories) { category ->
                 CategoryChip(
                     category = category,
-                    onClick = { viewModel.selectCategory(category) }
+                    // 💡 Passer la catégorie sélectionnée pour la comparaison
+                    isSelected = category == selectedCategory,
+                    onClick = {
+                        // 💡 Logique pour désélectionner si on clique à nouveau sur la même catégorie
+                        val newCategory = if (category == selectedCategory) categories.first() else category
+                        viewModel.selectCategory(newCategory)
+                    }
                 )
             }
         }
@@ -96,16 +105,35 @@ fun CategoryList(
 @Composable
 fun CategoryChip(
     category: Category,
+    isSelected: Boolean, // 💡 Nouveau paramètre
     onClick: () -> Unit
 ) {
+    // 💡 Définir la couleur du conteneur en fonction de l'état
+    val containerColor = if (isSelected) {
+        Color.White // Couleur pour la catégorie sélectionnée (vous pouvez la changer)
+    } else {
+        GreenButton // Couleur par défaut
+    }
+
+    // 💡 Définir la couleur du texte en fonction de l'état
+    val textColor = if (isSelected) {
+        GreenButton // Couleur du texte pour la sélection
+    } else {
+        Color.White // Couleur du texte par défaut
+    }
+
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+        colors = ButtonDefaults.buttonColors(containerColor = containerColor), // Utiliser la couleur dynamique
+        // Ajouter un border si vous voulez que la distinction soit plus claire
+        border = if (isSelected) ButtonDefaults.outlinedButtonBorder.copy(
+            brush = androidx.compose.ui.graphics.SolidColor(GreenButton)
+        ) else null
     ) {
         Text(
             text = category.name,
-            color = Color.White,
-            fontWeight = FontWeight.Normal,
+            color = textColor, // Utiliser la couleur de texte dynamique
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }

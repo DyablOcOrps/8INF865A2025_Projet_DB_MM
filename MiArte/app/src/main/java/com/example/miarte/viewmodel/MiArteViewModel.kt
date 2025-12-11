@@ -100,6 +100,9 @@ class MiArteViewModel : ViewModel() {
         Category(4, "Dessin"),
         Category(5, "Jeux Vidéos")
     )
+
+    // État mutable pour la catégorie sélectionnée
+
     val categoriesNoAll: List<Category> = _categories.filter { it.id != 0 }
     val categories: List<Category> = _categories
 
