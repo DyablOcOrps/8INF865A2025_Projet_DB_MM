@@ -1,5 +1,6 @@
 package com.example.miarte.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore // NOUVEAU
 import com.google.firebase.firestore.toObject // NOUVEAU
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.* // combine, stateIn, SharedFlow, etc.
+import java.util.UUID
 
 // État de l'authentification (inchangé)
 sealed class AuthState {
@@ -187,28 +190,43 @@ class MiArteViewModel : ViewModel() {
         }
     }
 
-    // --- ÉCRITURE : Ajout d'une œuvre (remplace la logique locale) ---
-    fun addArt(title: String, description: String, price: String, imageUrl: String, category: Category) {
+    // --- ÉCRITURE : Ajout d'une œuvre AVEC UPLOAD D'IMAGE ---
+    fun addArt(title: String, description: String, price: String, imageUri: Uri, category: Category) {
         val authorName = firebaseAuth.currentUser?.displayName ?: "Anonyme"
         val currentUserId = firebaseAuth.currentUser?.uid ?: return
 
-        // Crée l'objet Art, l'ID reste vide car Firestore le générera
-        val newArt = Art(
-            id = "",
-            title = title,
-            imageUrl = imageUrl,
-            userId = currentUserId,
-            author = authorName,
-            description = description,
-            price = price,
-            category = category
-        )
+        // 1. Créer une référence unique pour l'image dans Firebase Storage
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
 
-        // Ajout à la collection "arts"
-        db.collection("arts")
-            .add(newArt)
-            .addOnSuccessListener { Log.d("MiArteViewModel", "Oeuvre ajoutée") }
-            .addOnFailureListener { e -> Log.w("MiArteViewModel", "Erreur ajout", e) }
+        // 2. Envoyer le fichier (Upload)
+        val uploadTask = imageRef.putFile(imageUri)
+
+        uploadTask.addOnSuccessListener {
+            // 3. Succès de l'upload -> On demande l'URL de téléchargement publique
+            imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+
+                // 4. On crée l'objet Art avec la VRAIE URL internet (https://...)
+                val newArt = Art(
+                    id = "",
+                    title = title,
+                    imageUrl = downloadUrl.toString(), // C'est ici que la magie opère !
+                    userId = currentUserId,
+                    author = authorName,
+                    description = description,
+                    price = price,
+                    category = category
+                )
+
+                // 5. On sauvegarde dans Firestore
+                db.collection("arts")
+                    .add(newArt)
+                    .addOnSuccessListener { Log.d("MiArteViewModel", "Oeuvre ajoutée avec succès") }
+                    .addOnFailureListener { e -> Log.w("MiArteViewModel", "Erreur ajout Firestore", e) }
+            }
+        }.addOnFailureListener { e ->
+            Log.e("MiArteViewModel", "Erreur lors de l'upload de l'image", e)
+        }
     }
 
     // --- LECTURE PAR ID : Recherche locale (dans le cache du Flow) ---

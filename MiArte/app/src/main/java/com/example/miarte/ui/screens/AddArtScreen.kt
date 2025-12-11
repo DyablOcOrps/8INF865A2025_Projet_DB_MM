@@ -80,14 +80,17 @@ fun AddArtScreen(navController: NavController, viewModel: MiArteViewModel = view
             // expertChecked
 
     fun submitArt() {
-        viewModel.addArt(
-            title = title,
-            description = description,
-            price = price,
-            imageUrl = imageUri.toString(),
-            category = selectedCategory!!
-        )
-        navController.navigate("home")
+        // On s'assure que l'URI n'est pas null (déjà vérifié par allFieldsFilled, mais sécurité en plus)
+        if (imageUri != null) {
+            viewModel.addArt(
+                title = title,
+                description = description,
+                price = price,
+                imageUri = imageUri!!, // On passe l'Uri directement, pas .toString()
+                category = selectedCategory!!
+            )
+            navController.navigate("home")
+        }
     }
 
     BaseScreen(navController, viewModel) {
